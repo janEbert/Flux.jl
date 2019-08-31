@@ -7,7 +7,13 @@ pushfirst!(LOAD_PATH, joinpath(@__DIR__, ".."))
 using Documenter, Flux, NNlib
 
 makedocs(modules=[Flux, NNlib],
+         doctest = true,
          sitename = "Flux",
+         format = Documenter.HTML(
+                 analytics = "UA-36890222-9",
+                 assets = ["assets/flux.css"],
+                 prettyurls = get(ENV, "CI", nothing) == "true",
+         ),
          pages = ["Home" => "index.md",
                   "Building Models" =>
                     ["Basics" => "models/basics.md",
