@@ -4,17 +4,23 @@
 Chain multiple layers / functions together, so that they are called in sequence
 on a given input.
 
-```julia
-m = Chain(x -> x^2, x -> x+1)
-m(5) == 26
-
-m = Chain(Dense(10, 5), Dense(5, 2))
-x = rand(10)
-m(x) == m[2](m[1](x))
-```
-
 `Chain` also supports indexing and slicing, e.g. `m[2]` or `m[1:end-1]`.
 `m[1:3](x)` will calculate the output of the first three layers.
+
+# Examples
+```jldoctest
+julia> m = Chain(x -> x^2, x -> x+1);
+
+julia> m(5) == 26
+true
+
+julia> m = Chain(Dense(10, 5), Dense(5, 2));
+
+julia> x = rand(10);
+
+julia> m(x) == m[2](m[1](x))
+true
+```
 """
 struct Chain{T<:Tuple}
   layers::T
@@ -47,6 +53,7 @@ end
 # Johnny Chen -- @johnnychen94
 """
     activations(c::Chain, input)
+
 Calculate the forward results of each layers in Chain `c` with `input` as model input.
 """
 function activations(c::Chain, input)
@@ -62,21 +69,22 @@ end
 """
     Dense(in::Integer, out::Integer, σ = identity)
 
-Creates a traditional `Dense` layer with parameters `W` and `b`.
+Create a traditional `Dense` layer with parameters `W` and `b`.
 
     y = σ.(W * x .+ b)
 
 The input `x` must be a vector of length `in`, or a batch of vectors represented
 as an `in × N` matrix. The out `y` will be a vector or batch of length `out`.
 
-```julia
+# Examples
+```jldoctest; setup = :(using Random; Random.seed!(0))
 julia> d = Dense(5, 2)
 Dense(5, 2)
 
 julia> d(rand(5))
-Tracked 2-element Array{Float64,1}:
-  0.00257447
-  -0.00449443
+Tracked 2-element Array{Float32,1}:
+ -0.16210233f0
+  0.12311903f0
 ```
 """
 struct Dense{F,S,T}
@@ -116,7 +124,7 @@ end
 """
     Diagonal(in::Integer)
 
-Creates an element-wise linear transformation layer with learnable
+Create an element-wise linear transformation layer with learnable
 vectors `α` and `β`:
 
     y = α .* x .+ β
@@ -146,8 +154,8 @@ end
 """
     Maxout(over)
 
-`Maxout` is a neural network layer, which has a number of internal layers,
-which all have the same input, and the maxout returns the elementwise maximium
+`Maxout` is a neural network layer which has a number of internal layers
+which all receive the same input. The layer returns the elementwise maximium
 of the internal layers' outputs.
 
 Maxout over linear dense layers satisfies the univeral approximation theorem.
@@ -166,17 +174,18 @@ end
 """
     Maxout(f, n_alts)
 
-Constructs a Maxout layer over `n_alts` instances of  the layer given  by `f`.
-The function takes no arguement and should return some callable layer.
-Conventionally this is a linear dense layer.
+Construct a Maxout layer over `n_alts` instances of the layer given by `f`.
+The function takes no arguments and should return some callable layer.
+Conventionally, this is a linear dense layer.
 
-For example the following example which
-will construct a `Maxout` layer over 4 internal dense linear layers,
-each identical in structure (784 inputs, 128 outputs).
+# Examples
+
+This constructs a `Maxout` layer over 4 internal dense linear layers, each
+identical in structure (784 inputs, 128 outputs):
 ```julia
-    insize = 784
-    outsize = 128
-    Maxout(()->Dense(insize, outsize), 4)
+insize = 784
+outsize = 128
+Maxout(()->Dense(insize, outsize), 4)
 ```
 """
 function Maxout(f, n_alts)
@@ -191,20 +200,22 @@ function (mo::Maxout)(input::AbstractArray)
 end
 
 """
-    SkipConnection(layers...)
+    SkipConnection(layer, connection)
 
-Creates a Skip Connection, which constitutes of a layer or Chain of consecutive layers
-and a shortcut connection linking the input to the block to the
-output through a user-supplied callable.
+Create a skip connection which consists of a layer or `Chain` of consecutive
+layers and a shortcut connection linking the block's input to the output
+through a user-supplied 2-argument callable. The first argument to the callable
+will be propagated through the given `layer` while the second is the unchanged,
+"skipped" input.
 
 `SkipConnection` requires the output dimension to be the same as the input.
 
-A 'ResNet'-type skip-connection with identity shortcut would simply be
+We can easily define a ResNet-type skip connection with identity shortcut:
 ```julia
-    SkipConnection(layer, (a,b) -> a + b)
+# `a` is propagated through `layer`, `b` will be passed through unchanged
+SkipConnection(layer, (a,b) -> a + b)
 ```
 """
-
 struct SkipConnection
   layers
   connection  #user can pass arbitrary connections here, such as (a,b) -> a + b

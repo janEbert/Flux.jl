@@ -3,25 +3,26 @@ using NNlib: conv, ∇conv_data, depthwiseconv
 expand(N, i::Tuple) = i
 expand(N, i::Integer) = ntuple(_ -> i, N)
 """
-    Conv(size, in=>out)
-    Conv(size, in=>out, relu)
+    Conv(size, in => out, σ = identity; init = glorot_uniform,
+         stride = 1, pad = 0, dilation = 1)
 
 Standard convolutional layer. `size` should be a tuple like `(2, 2)`.
 `in` and `out` specify the number of input and output channels respectively.
 
-Example: Applying Conv layer to a 1-channel input using a 2x2 window size,
-         giving us a 16-channel output. Output is activated with ReLU.
-
-    size = (2,2)
-    in = 1
-    out = 16 
-    Conv((2, 2), 1=>16, relu)
-
-Data should be stored in WHCN order (width, height, # channels, # batches). 
-In other words, a 100×100 RGB image would be a `100×100×3×1` array, 
+Data should be stored in WHCN order (width, height, # channels, # batches).
+In other words, a 100×100 RGB image would be a `100×100×3×1` array,
 and a batch of 50 would be a `100×100×3×50` array.
 
-Takes the keyword arguments `pad`, `stride` and `dilation`.
+# Examples
+
+Apply a `Conv` layer to a 1-channel input using a 2×2 window size, giving us a
+16-channel output. Output is activated with ReLU.
+```julia
+size = (2,2)
+in = 1
+out = 16
+Conv((2, 2), 1=>16, relu)
+```
 """
 struct Conv{N,M,F,A,V}
   σ::F
@@ -69,14 +70,14 @@ end
   a(T.(x))
 
 """
-    ConvTranspose(size, in=>out)
-    ConvTranspose(size, in=>out, relu)
+    ConvTranspose(size, in => out, σ = identity; init = glorot_uniform,
+                  stride = 1, pad = 0, dilation = 1)
 
 Standard convolutional transpose layer. `size` should be a tuple like `(2, 2)`.
 `in` and `out` specify the number of input and output channels respectively.
+
 Data should be stored in WHCN order. In other words, a 100×100 RGB image would
 be a `100×100×3` array, and a batch of 50 would be a `100×100×3×50` array.
-Takes the keyword arguments `pad`, `stride` and `dilation`.
 """
 struct ConvTranspose{N,M,F,A,V}
   σ::F
@@ -136,8 +137,8 @@ end
 (a::ConvTranspose{<:Any,<:Any,W})(x::AbstractArray{<:Real}) where {T <: Union{Float32,Float64}, W <: AbstractArray{T}} =
   a(T.(x))
 """
-    DepthwiseConv(size, in=>out)
-    DepthwiseConv(size, in=>out, relu)
+    DepthwiseConv(size, in => out, σ = identity; init = glorot_uniform,
+                  stride = 1, pad = 0, dilation = 1)
 
 Depthwise convolutional layer. `size` should be a tuple like `(2, 2)`.
 `in` and `out` specify the number of input and output channels respectively.
@@ -145,8 +146,6 @@ Note that `out` must be an integer multiple of `in`.
 
 Data should be stored in WHCN order. In other words, a 100×100 RGB image would
 be a `100×100×3` array, and a batch of 50 would be a `100×100×3×50` array.
-
-Takes the keyword arguments `pad`, `stride` and `dilation`.
 """
 struct DepthwiseConv{N,M,F,A,V}
   σ::F
@@ -199,25 +198,26 @@ end
 (a::DepthwiseConv{<:Any,<:Any,W})(x::AbstractArray{<:Real}) where {T <: Union{Float32,Float64}, W <: AbstractArray{T}} =
   a(T.(x))
 """
-    CrossCor(size, in=>out)
-    CrossCor(size, in=>out, relu)
-  
+    CrossCor(size, in => out, σ = identity; init = glorot_uniform,
+             stride = 1, pad = 0, dilation = 1)
+
 Standard cross convolutional layer. `size` should be a tuple like `(2, 2)`.
 `in` and `out` specify the number of input and output channels respectively.
-    
-Example: Applying CrossCor layer to a 1-channel input using a 2x2 window size,
-         giving us a 16-channel output. Output is activated with ReLU.
-    
-    size = (2,2)
-    in = 1
-    out = 16 
-    CrossCor((2, 2), 1=>16, relu)
-    
-Data should be stored in WHCN order (width, height, # channels, # batches). 
-In other words, a 100×100 RGB image would be a `100×100×3×1` array, 
+
+Data should be stored in WHCN order (width, height, # channels, # batches).
+In other words, a 100×100 RGB image would be a `100×100×3×1` array,
 and a batch of 50 would be a `100×100×3×50` array.
-    
-Takes the keyword arguments `pad`, `stride` and `dilation`.
+
+# Examples
+
+Apply a `CrossCor` layer to a 1-channel input using a 2×2 window size, giving us a
+16-channel output. Output is activated with ReLU.
+```julia
+size = (2,2)
+in = 1
+out = 16
+CrossCor((2, 2), 1=>16, relu)
+```
 """
 struct CrossCor{N,M,F,A,V}
   σ::F
@@ -270,11 +270,9 @@ end
   a(T.(x))
 
 """
-    MaxPool(k)
+    MaxPool(k; pad = 0, stride = k)
 
-Max pooling layer. `k` stands for the size of the window for each dimension of the input.
-
-Takes the keyword arguments `pad` and `stride`.
+Max pooling layer. `k` is the size of the window for each dimension of the input.
 """
 struct MaxPool{N,M}
   k::NTuple{N,Int}
@@ -299,11 +297,9 @@ function Base.show(io::IO, m::MaxPool)
 end
 
 """
-    MeanPool(k)
+    MeanPool(k; pad = 0, stride = k)
 
-Mean pooling layer. `k` stands for the size of the window for each dimension of the input.
-
-Takes the keyword arguments `pad` and `stride`.
+Mean pooling layer. `k` is the size of the window for each dimension of the input.
 """
 struct MeanPool{N,M}
     k::NTuple{N,Int}

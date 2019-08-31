@@ -51,20 +51,19 @@ Create an [`OneHotVector`](@ref) wtih `l`-th element be `true` based on possible
 If `unk` is given, it retruns `onehot(unk, labels)` if the input label `l` is not find in `labels`; otherwise
 it will error.
 
-## Examples
-
+# Examples
 ```jldoctest
-julia> onehot(:b, [:a, :b, :c])
+julia> Flux.onehot(:b, [:a, :b, :c])
 3-element Flux.OneHotVector:
- false
-  true
- false
+ 0
+ 1
+ 0
 
-julia> onehot(:c, [:a, :b, :c])
+julia> Flux.onehot(:c, [:a, :b, :c])
 3-element Flux.OneHotVector:
- false
- false
-  true
+ 0
+ 0
+ 1
 ```
 """
 function onehot(l, labels)
@@ -85,15 +84,13 @@ end
 Create an [`OneHotMatrix`](@ref) with a batch of labels based on possible `labels` set, returns the
 `onehot(unk, labels)` if given labels `ls` is not found in set `labels`.
 
-## Examples
-
+# Examples
 ```jldoctest
-julia> onehotbatch([:b, :a, :b], [:a, :b, :c])
-3×3 Flux.OneHotMatrix:
- false   true  false
-  true  false   true
- false  false  false
-
+julia> Flux.onehotbatch([:b, :a, :b], [:a, :b, :c])
+3×3 Flux.OneHotMatrix{Array{Flux.OneHotVector,1}}:
+ 0  1  0
+ 1  0  1
+ 0  0  0
 ```
 """
 onehotbatch(ls, labels, unk...) =
@@ -106,13 +103,12 @@ Base.argmax(xs::OneHotVector) = xs.ix
 
 Inverse operations of [`onehot`](@ref).
 
-## Examples
-
+# Examples
 ```jldoctest
-julia> onecold([true, false, false], [:a, :b, :c])
+julia> Flux.onecold([true, false, false], [:a, :b, :c])
 :a
 
-julia> onecold([0.3, 0.2, 0.5], [:a, :b, :c])
+julia> Flux.onecold([0.3, 0.2, 0.5], [:a, :b, :c])
 :c
 ```
 """
