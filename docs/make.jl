@@ -10,11 +10,6 @@ DocMeta.setdocmeta!(Flux, :DocTestSetup, :(using Flux); recursive=true)
 makedocs(modules=[Flux, NNlib],
          doctest = true,
          sitename = "Flux",
-         format = Documenter.HTML(
-                 analytics = "UA-36890222-9",
-                 assets = ["assets/flux.css"],
-                 prettyurls = get(ENV, "CI", nothing) == "true",
-         ),
          pages = ["Home" => "index.md",
                   "Building Models" =>
                     ["Basics" => "models/basics.md",
@@ -30,10 +25,12 @@ makedocs(modules=[Flux, NNlib],
                   "Saving & Loading" => "saving.md",
                   "Utility Functions" => "utilities.md",
                   "Performance Tips" => "performance.md",
+                  "Datasets" => "datasets.md",
                   "Community" => "community.md"],
-         format = Documenter.HTML(assets = ["assets/flux.css"],
-                                  analytics = "UA-36890222-9",
-                                  prettyurls = haskey(ENV, "CI")))
+         format = Documenter.HTML(
+             assets = ["assets/flux.css"],
+             analytics = "UA-36890222-9",
+             prettyurls = haskey(ENV, "CI")))
 
 deploydocs(repo = "github.com/FluxML/Flux.jl.git")
 
