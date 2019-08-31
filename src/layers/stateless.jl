@@ -36,6 +36,8 @@ Return the cross entropy between the given probability distributions.
 `weight` can be `Nothing`, a `Number` or an `AbstractVector`.
 `weight=nothing` acts like `weight=1` but is faster.
 
+See also: [`Flux.logitcrossentropy`](@ref), [`Flux.binarycrossentropy`](@ref), [`Flux.logitbinarycrossentropy`](@ref)
+
 # Examples
 ```jldoctest
 julia> Flux.crossentropy(softmax([-1.1491, 0.8619, 0.3127]), [1, 1, 0])
@@ -63,52 +65,63 @@ end
 """
     binarycrossentropy(ŷ, y; ϵ=eps(ŷ))
 
-Return `-y*log(ŷ + ϵ) - (1-y)*log(1-ŷ + ϵ)`. The ϵ term provides numerical stability.
+Return ``-y*\\log(ŷ + ϵ) - (1-y)*\\log(1-ŷ + ϵ)``. The `ϵ` term provides numerical stability.
 
-    julia> binarycrossentropy.(σ.([-1.1491, 0.8619, 0.3127]), [1, 1, 0.])
-    3-element Array{Float64,1}:
-    1.4244
-    0.352317
-    0.86167
+See also: [`Flux.crossentropy`](@ref), [`Flux.logitcrossentropy`](@ref), [`Flux.logitbinarycrossentropy`](@ref)
+
+# Examples
+```jldoctest
+julia> Flux.binarycrossentropy.(σ.([-1.1491, 0.8619, 0.3127]), [1, 1, 0])
+3-element Array{Float64,1}:
+ 1.424397097347566
+ 0.35231664672364077
+ 0.8616703662235441
+```
 """
 binarycrossentropy(ŷ, y; ϵ=eps(ŷ)) = -y*log(ŷ + ϵ) - (1 - y)*log(1 - ŷ + ϵ)
 
 """
     logitbinarycrossentropy(logŷ, y)
 
-`logitbinarycrossentropy(logŷ, y)` is mathematically equivalent to `binarycrossentropy(σ(logŷ), y)`
-but it is more numerically stable.
+`logitbinarycrossentropy(logŷ, y)` is mathematically equivalent to
+[`Flux.binarycrossentropy(σ(logŷ), y)`](@ref) but it is more numerically stable.
 
-    julia> logitbinarycrossentropy.([-1.1491, 0.8619, 0.3127], [1, 1, 0.])
-    3-element Array{Float64,1}:
-     1.4244
-     0.352317
-     0.86167
+# Examples
+```jldoctest
+julia> Flux.logitbinarycrossentropy.([-1.1491, 0.8619, 0.3127], [1, 1, 0])
+3-element Array{Float64,1}:
+ 1.4243970973475661
+ 0.35231664672364094
+ 0.8616703662235443
+```
 """
 logitbinarycrossentropy(logŷ, y) = (1 - y)*logŷ - logσ(logŷ)
 
 """
     normalise(x::AbstractArray; dims=1)
 
-Normalises `x` to mean 0 and standard deviation 1, across the dimensions given by `dims`. Defaults to normalising over columns.
+Normalise `x` to mean 0 and standard deviation 1 across the dimensions given by `dims`.
+Defaults to normalising over columns.
 
-    julia> a = reshape(collect(1:9), 3, 3)
-    3×3 Array{Int64,2}:
-     1  4  7
-     2  5  8
-     3  6  9
+```jldoctest
+julia> a = reshape(collect(1:9), 3, 3)
+3×3 Array{Int64,2}:
+ 1  4  7
+ 2  5  8
+ 3  6  9
 
-    julia> normalise(a)
-    3×3 Array{Float64,2}:
-     -1.22474  -1.22474  -1.22474
-      0.0       0.0       0.0
-      1.22474   1.22474   1.22474
+julia> Flux.normalise(a)
+3×3 Array{Float64,2}:
+ -1.22474  -1.22474  -1.22474
+  0.0       0.0       0.0
+  1.22474   1.22474   1.22474
 
-    julia> normalise(a, dims=2)
-    3×3 Array{Float64,2}:
-     -1.22474  0.0  1.22474
-     -1.22474  0.0  1.22474
-     -1.22474  0.0  1.22474
+julia> Flux.normalise(a, dims=2)
+3×3 Array{Float64,2}:
+ -1.22474  0.0  1.22474
+ -1.22474  0.0  1.22474
+ -1.22474  0.0  1.22474
+```
 """
 function normalise(x::AbstractArray; dims=1)
   μ′ = mean(x, dims = dims)
