@@ -2,12 +2,47 @@ using NNlib: logsoftmax, logσ
 
 # Cost functions
 
+"""
+    mse(ŷ, y)
+
+Mean square error between ŷ and y;
+defined as ``\\frac{1}{n} \\sum_{i=1}^n (ŷ_i - y_i)^2``.
+
+# Examples
+```jldoctest
+julia> Flux.mse([0, 2], [1, 1])
+1//1
+```
+"""
 mse(ŷ, y) = sum((ŷ .- y).^2) * 1 // length(y)
 
+"""
+    crossentropy(ŷ, y; weight = 1)
+
+Return the cross entropy between the given probability distributions.
+
+# Examples
+```jldoctest
+julia> Flux.crossentropy(softmax([-1.1491, 0.8619, 0.3127]), [1, 1, 0])
+3.085467254747739
+```
+"""
 function crossentropy(ŷ::AbstractVecOrMat, y::AbstractVecOrMat; weight = 1)
   -sum(y .* log.(ŷ) .* weight) * 1 // size(y, 2)
 end
 
+"""
+    logitcrossentropy(logŷ, y; weight = 1)
+
+`logitcrossentropy(logŷ, y)` is mathematically equivalent to
+[`Flux.crossentropy(softmax(logŷ), y)`](@ref) but it is more numerically stable.
+
+# Examples
+```jldoctest
+julia> Flux.logitcrossentropy([-1.1491, 0.8619, 0.3127], [1, 1, 0])
+3.085467254747738
+```
+"""
 function logitcrossentropy(logŷ::AbstractVecOrMat, y::AbstractVecOrMat; weight = 1)
   return -sum(y .* logsoftmax(logŷ) .* weight) * 1 // size(y, 2)
 end
