@@ -17,13 +17,16 @@ makedocs(modules=[Flux, NNlib],
                      "Model Reference" => "models/layers.md"],
                   "Training Models" =>
                     ["Optimisers" => "training/optimisers.md",
+                     "Loss Functions" => "training/loss_functions.md",
                      "Training" => "training/training.md"],
                   "One-Hot Encoding" => "data/onehot.md",
                   "GPU Support" => "gpu.md",
                   "Saving & Loading" => "saving.md",
+                  "Utility Functions" => "utilities.md",
                   "Performance Tips" => "performance.md",
                   "Internals" =>
                     ["Backpropagation" => "internals/tracker.md"],
                   "Community" => "community.md"])
 
 deploydocs(repo = "github.com/FluxML/Flux.jl.git")
+
