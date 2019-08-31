@@ -61,6 +61,7 @@ These layers don't affect the structure of the network but may improve training 
 ```@docs
 BatchNorm
 Dropout
+Flux.dropout
 AlphaDropout
 LayerNorm
 GroupNorm
