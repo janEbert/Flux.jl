@@ -12,7 +12,7 @@ in the background. `cell` should be a model of the form:
 
     h, y = cell(h, x...)
 
-For example, here's a recurrent network that keeps a running total of its inputs.
+For example, here's a recurrent network that keeps a running total of its inputs:
 
 ```julia
 accum(h, x) = (h+x, x)
@@ -46,7 +46,7 @@ Base.show(io::IO, m::Recur) = print(io, "Recur(", m.cell, ")")
     reset!(rnn)
 
 Reset the hidden state of a recurrent layer back to its original value. See also
-`truncate!`.
+[`truncate!`](@ref).
 
 Assuming you have a `Recur` layer `rnn`, this is roughly equivalent to
 
@@ -136,8 +136,8 @@ Base.show(io::IO, l::LSTMCell) =
 """
     LSTM(in::Integer, out::Integer)
 
-Long Short Term Memory recurrent layer. Behaves like an RNN but generally
-exhibits a longer memory span over sequences.
+[Long Short Term Memory](https://www.researchgate.net/publication/13853244_Long_Short-term_Memory)
+recurrent layer. Behaves like an RNN but generally exhibits a longer memory span over sequences.
 
 See [this article](https://colah.github.io/posts/2015-08-Understanding-LSTMs/)
 for a good overview of the internals.
@@ -177,8 +177,8 @@ Base.show(io::IO, l::GRUCell) =
 """
     GRU(in::Integer, out::Integer)
 
-Gated Recurrent Unit layer. Behaves like an RNN but generally
-exhibits a longer memory span over sequences.
+[Gated Recurrent Unit](https://arxiv.org/abs/1406.1078) layer. Behaves like an
+RNN but generally exhibits a longer memory span over sequences.
 
 See [this article](https://colah.github.io/posts/2015-08-Understanding-LSTMs/)
 for a good overview of the internals.

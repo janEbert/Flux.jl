@@ -45,7 +45,7 @@ end
 """
     Nesterov(eta, ρ = 0.9)
 
-Gradient descent with learning rate  `η` and Nesterov momentum `ρ`.
+Gradient descent with learning rate `η` and Nesterov momentum `ρ`.
 """
 mutable struct Nesterov
   eta::Float64
@@ -287,11 +287,13 @@ function apply!(o::Optimiser, x, Δ)
 end
 
 """
-`InvDecay(γ)`
+    InvDecay(γ)
 
-Apply inverse time decay to an optimiser
+Apply inverse time decay to an optimiser.
+
+# Examples
 ```julia
-  Optimiser(InvDecay(..), Opt(..))
+Optimiser(InvDecay(..), Opt(..))
 ```
 """
 mutable struct InvDecay
@@ -310,13 +312,13 @@ function apply!(o::InvDecay, x, Δ)
 end
 
 """
-`ExpDecay(eta, decay, decay_step, clip)`
+    ExpDecay(eta, decay, decay_step, clip)
 
 Schedule the learning rate `eta` by `decay` every `decay_step` till a minimum of `clip`.
 
 To apply exponential decay to an optimiser:
 ```julia
-  Optimiser(ExpDecay(..), Opt(..))
+Optimiser(ExpDecay(..), Opt(..))
 ```
 """
 mutable struct ExpDecay
@@ -340,9 +342,9 @@ function apply!(o::ExpDecay, x, Δ)
 end
 
 """
-`WeightDecay(wd)`
+    WeightDecay(wd)
 
-Decay the weight parameter by `wd`
+Decay the weight parameter by `wd`.
 """
 mutable struct WeightDecay
   wd::Real
