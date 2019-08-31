@@ -36,7 +36,7 @@ But machine learning models can have *hundreds* of parameters! Flux offers a nic
 ```jldoctest basics
 julia> using Flux
 
-julia> W = param(2) 
+julia> W = param(2)
 2.0 (tracked)
 
 julia> b = param(3)
