@@ -24,6 +24,7 @@ makedocs(modules=[Flux, NNlib],
                   "Saving & Loading" => "saving.md",
                   "Utility Functions" => "utilities.md",
                   "Performance Tips" => "performance.md",
+                  "Datasets" => "datasets.md",
                   "Internals" =>
                     ["Backpropagation" => "internals/tracker.md"],
                   "Community" => "community.md"])
