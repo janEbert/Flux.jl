@@ -31,8 +31,6 @@ A Dropout layer. For each input, either sets that input to `0` (with probability
 e.g. `dims=1` applies dropout along columns and `dims=2` along rows.
 This is used as a regularisation, i.e. it reduces overfitting during training.
 See also [`Flux.dropout`](@ref).
-
-Does nothing to the input once in [`Flux.testmode!`](@ref).
 """
 mutable struct Dropout{F,D}
   p::F

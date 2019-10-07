@@ -81,9 +81,9 @@ julia> d = Dense(5, 2)
 Dense(5, 2)
 
 julia> d(rand(5))
-Tracked 2-element Array{Float32,1}:
- -0.16210233f0
-  0.12311903f0
+2-element Array{Float32,1}:
+ -0.16210233
+  0.12311903
 ```
 """
 struct Dense{F,S,T}
