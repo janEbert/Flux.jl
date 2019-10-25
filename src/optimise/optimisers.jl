@@ -7,14 +7,14 @@ const ϵ = 1e-8
 # TODO: should use weak refs
 
 """
-  Descent(η = 0.1)
+    Descent(η = 0.1)
 
 Classic gradient descent optimiser with learning rate `η`.
 For each parameter `p` and its gradient `δp`, this runs `p -= η*δp`
 
-# Parameters
-  - Learning rate (`η`): Amount by which the gradients are discounted before updating
-                         the weights.
+# Arguments
+- `η::Float64`: learning rate; amount by which gradients are discounted before updating
+                the weights.
 
 # Examples
 ```julia
@@ -25,7 +25,7 @@ opt = Descent(0.3)
 ps = params(model)
 
 gs = gradient(ps) do
-  loss(x, y)
+    loss(x, y)
 end
 
 Flux.Optimise.update!(opt, ps, gs)
@@ -46,11 +46,11 @@ end
 
 Gradient descent optimizer with learning rate `η` and momentum `ρ`.
 
-# Parameters
-  - Learning rate (`η`): Amount by which gradients are discounted before updating the
-                         weights.
-  - Momentum (`ρ`): Controls the acceleration of gradient descent in the relevant direction
-                    and therefore the dampening of oscillations.
+# Arguments
+- `η::Float64`: learning rate; amount by which gradients are discounted before updating
+                the weights.
+- `ρ::Float64`: momentum term; controls the acceleration of gradient descent in the
+                prominent direction, in effect dampening oscillations.
 
 # Examples
 ```julia
@@ -79,10 +79,13 @@ end
 
 Gradient descent optimizer with learning rate `η` and Nesterov momentum `ρ`.
 
-# Parameters
-  - Learning rate (`η`): Amount by which the gradients are discounted before updating the
-                         weights.
-  - Nesterov momentum (`ρ`): The amount of Nesterov momentum to be applied.
+# Arguments
+- `η::Float64`: learning rate; amount by which gradients are discounted before updating
+                the weights.
+- `ρ::Float64`: amount of Nesterov momentum to be applied. Controls the acceleration of
+                gradient descent in the prominent direction, in effect
+                dampening oscillations.
+.
 
 # Examples
 ```julia
@@ -115,9 +118,11 @@ Optimizer using the
 algorithm. Often a good choice for recurrent networks. Parameters other than learning rate
 generally don't need tuning.
 
-# Parameters
-  - Learning rate (`η`)
-  - Momentum (`ρ`)
+# Arguments
+- `η::Float64`: learning rate; amount by which gradients are discounted before updating
+                the weights.
+- `ρ::Float64`: momentum term; controls the acceleration of gradient descent in the
+                prominent direction, in effect dampening oscillations.
 
 # Examples
 ```julia
@@ -142,23 +147,22 @@ function apply!(o::RMSProp, x, Δ)
 end
 
 """
-    ADAM(η, β::Tuple)
+    ADAM(η::Float64, β::Tuple{Float64, Float64})
 
-Implements the ADAM optimiser.
+[ADAM](https://arxiv.org/abs/1412.6980v8) optimiser.
 
-## Paramters
-  - Learning Rate (`η`): Defaults to `0.001`.
-  - Beta (`β::Tuple`): The first element refers to β1 and the second to β2. Defaults to `(0.9, 0.999)`.
+# Arguments
+- `η::Float64`: learning rate; amount by which gradients are discounted before updating
+                the weights.
+- `β::Tuple{Float64, Float64}`: exponential decay for the first (β1) and the second (β2)
+                                momentum estimate.
 
-## Examples
-
+# Examples
 ```julia
-opt = ADAM() # uses the default η = 0.001 and β = (0.9, 0.999)
+opt = ADAM()
 
 opt = ADAM(0.001, (0.9, 0.8))
 ```
-## References
-[ADAM](https://arxiv.org/abs/1412.6980v8) optimiser.
 """
 mutable struct ADAM
   eta::Float64
@@ -183,10 +187,11 @@ end
 
 [Rectified ADAM](https://arxiv.org/pdf/1908.03265v1.pdf) optimizer.
 
-# Parameters
-  - Learning rate (`η`)
-  - Decay of momentums (`β::Tuple`): Exponential decay for the first (β1) and the
-                                     second (β2) momentum estimate.
+# Arguments
+- `η::Float64`: learning rate; amount by which gradients are discounted before updating
+                the weights.
+- `β::Tuple{Float64, Float64}`: exponential decay for the first (β1) and the second (β2)
+                                momentum estimate.
 
 # Examples
 ```julia
@@ -225,10 +230,11 @@ end
 
 [AdaMax](https://arxiv.org/abs/1412.6980v9) is a variant of ADAM based on the ∞-norm.
 
-# Parameters
-  - Learning rate (`η`)
-  - Decay of momentums (`β::Tuple`): Exponential decay for the first (β1) and the
-                                     second (β2) momentum estimate.
+# Arguments
+- `η::Float64`: learning rate; amount by which gradients are discounted before updating
+                the weights.
+- `β::Tuple{Float64, Float64}`: exponential decay for the first (β1) and the second (β2)
+                                momentum estimate.
 
 # Examples
 ```julia
@@ -262,8 +268,9 @@ end
 parameter specific learning rates based on how frequently it is updated.
 Parameters don't need tuning.
 
-# Parameters
-  - Learning rate (`η`)
+# Arguments
+- `η::Float64`: learning rate; amount by which gradients are discounted before updating
+                the weights.
 
 # Examples
 ```julia
@@ -293,8 +300,8 @@ end
 rate based on a window of past gradient updates.
 Parameters don't need tuning.
 
-# Parameters
-  - Rho (`ρ`): Factor by which gradient is decayed at each time step.
+# Arguments
+- `ρ::Float64`: factor by which the gradient is decayed at each time step.
 
 # Examples
 ```julia
@@ -325,10 +332,11 @@ end
 The [AMSGrad](https://openreview.net/forum?id=ryQu7f-RZ) version of the ADAM
 optimiser. Parameters don't need tuning.
 
-# Parameters
-  - Learning Rate (`η`)
-  - Decay of momentums (`β::Tuple`): Exponential decay for the first (β1) and the
-                                     second (β2) momentum estimate.
+# Arguments
+- `η::Float64`: learning rate; amount by which gradients are discounted before updating
+                the weights.
+- `β::Tuple{Float64, Float64}`: exponential decay for the first (β1) and the second (β2)
+                                momentum estimate.
 
 # Examples
 ```julia
@@ -360,10 +368,11 @@ end
 [NADAM](http://cs229.stanford.edu/proj2015/054_report.pdf) is a Nesterov variant of ADAM.
 Parameters don't need tuning.
 
-# Parameters
-  - Learning rate (`η`)
-  - Decay of momentums (`β::Tuple`): Exponential decay for the first (β1) and the
-                                     second (β2) momentum estimate.
+# Arguments
+- `η::Float64`: learning rate; amount by which gradients are discounted before updating
+                the weights.
+- `β::Tuple{Float64, Float64}`: Exponential decay for the first (β1) and the second (β2)
+                                momentum estimate.
 
 # Examples
 ```julia
@@ -396,11 +405,12 @@ end
 [ADAMW](https://arxiv.org/abs/1711.05101) is a variant of ADAM fixing (as in repairing) its
 weight decay regularization.
 
-# Parameters
-  - Learning rate (`η`)
-  - Decay of momentums (`β::Tuple`): Exponential decay for the first (β1) and the
-                                     second (β2) momentum estimate.
-  - `decay`: Decay applied to weights during optimisation.
+# Arguments
+- `η::Float64`: learning rate; amount by which gradients are discounted before updating
+                the weights.
+- `β::Tuple{Float64, Float64}`: exponential decay for the first (β1) and the second (β2)
+                                momentum estimate.
+- `decay::Real`: decay applied to weights during optimisation.
 
 # Examples
 ```julia
@@ -465,17 +475,18 @@ function apply!(o::InvDecay, x, Δ)
 end
 
 """
-    ExpDecay(eta = 0.001, decay = 0.1, decay_step = 1000, clip = 1e-4)
+    ExpDecay(η = 0.001, decay = 0.1, decay_step = 1000, clip = 1e-4)
 
-Discount the learning rate `eta` by `decay` every `decay_step` steps till a minimum
+Discount the learning rate `η` by `decay` every `decay_step` steps till a minimum
 of `clip`.
 
-# Parameters
-  - Learning rate (`eta`)
-  - `decay`: Factor by which the learning rate is discounted.
-  - `decay_step`: Schedule decay operations by setting number of steps between two decay
-                  operations.
-  - `clip`: Minimum value of learning rate.
+# Arguments
+- `η::Float64`: learning rate; amount by which gradients are discounted before updating
+                the weights.
+- `decay::Float64`: factor by which the learning rate is discounted.
+- `decay_step::Int64`: schedule decay operations by setting number of steps between two
+                       decay operations.
+- `clip::Float64`: minimum value of learning rate.
 
 # Examples
 To apply exponential decay to an optimiser:
@@ -510,8 +521,8 @@ end
 
 Decay weights by `wd`.
 
-# Parameters
-  - Weight decay (`wd`)
+# Arguments
+- `wd::Real`: weight decay.
 """
 mutable struct WeightDecay
   wd::Real
