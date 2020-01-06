@@ -7,6 +7,8 @@ Flux's core feature is taking gradients of Julia code. The `gradient` function t
 ```jldoctest basics
 julia> using Flux
 
+julia> import Flux: gradient
+
 julia> f(x) = 3x^2 + 2x + 1;
 
 julia> df(x) = gradient(f, x)[1]; # df/dx = 6x + 2
