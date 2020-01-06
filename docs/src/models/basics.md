@@ -37,11 +37,13 @@ julia> gradient(f, [2, 1], [2, 0])  # same as: df(x,y) = gradient(f,x,y); df([2,
 But machine learning models can have *hundreds* of parameters! To handle this, Flux lets you work with collections of parameters, via `params`. You can get the gradient of all parameters used in a program without explicitly passing them in.
 
 ```jldoctest basics
-julia> using Flux
+julia> using Flux; import Flux: gradient
 
 julia> x = [2, 1];
 
 julia> y = [2, 0];
+
+julia> f(x, y) = sum((x .- y).^2);
 
 julia> gs = gradient(params(x, y)) do
          f(x, y)
